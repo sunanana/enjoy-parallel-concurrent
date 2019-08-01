@@ -22,10 +22,9 @@ func sig() <-chan os.Signal {
 }
 
 func main() {
-	println(os.Getpid())
-
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
 	go func() {
 		<-sig()
 		cancel()
@@ -34,10 +33,6 @@ func main() {
 	go func() {
 		time.Sleep(time.Second * 3)
 		cancel()
-	}()
-	go func() {
-		time.Sleep(time.Second * 9)
-		os.Exit(1)
 	}()
 
 	reqCh := process1(ctx)
@@ -106,8 +101,7 @@ func process2(ctx context.Context, req <-chan int) {
 			case <-ctx.Done():
 			case concurrency <- struct{}{}:
 				go func() {
-					time.Sleep(1 * time.Second)
-					fmt.Println(v)
+					mainJob(v)
 					processEndNotifyCh <- struct{}{}
 				}()
 			}
@@ -116,4 +110,9 @@ func process2(ctx context.Context, req <-chan int) {
 
 WAIT_CLOSE:
 	<-waitCloseCh
+}
+
+func mainJob(req int) {
+	time.Sleep(1 * time.Second)
+	fmt.Println(req)
 }
