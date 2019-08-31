@@ -2,19 +2,19 @@ package main
 
 import "sync"
 
-type Semaphore struct {
+type CountingSemaphore struct {
 	concurrency chan struct{}
 	wg          sync.WaitGroup
 }
 
-func NewSemaphore(concurrency int) *Semaphore {
-	return &Semaphore{
+func NewCountingSemaphore(concurrency int) *CountingSemaphore {
+	return &CountingSemaphore{
 		concurrency: make(chan struct{}, concurrency),
 		wg:          sync.WaitGroup{},
 	}
 }
 
-func (s *Semaphore) Run(f func()) {
+func (s *CountingSemaphore) Run(f func()) {
 	s.wg.Add(1)
 	s.concurrency <- struct{}{}
 	go func() {
@@ -24,6 +24,6 @@ func (s *Semaphore) Run(f func()) {
 	}()
 }
 
-func (s *Semaphore) Wait() {
+func (s *CountingSemaphore) Wait() {
 	s.wg.Wait()
 }
