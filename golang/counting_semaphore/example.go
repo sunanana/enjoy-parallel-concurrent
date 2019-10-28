@@ -1,9 +1,14 @@
 package counting_semaphore
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 func example() {
-	cSem := NewCountingSemaphore(3)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	cSem := NewCountingSemaphore(ctx, 3)
 
 	cSem.Run(func() { time.Sleep(time.Second * 1); println("1-1") })
 	cSem.Run(func() { time.Sleep(time.Second * 1); println("1-2") })
