@@ -1,4 +1,4 @@
-package main
+package counting_semaphore
 
 import "sync"
 

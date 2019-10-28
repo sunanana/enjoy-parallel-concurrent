@@ -1,8 +1,8 @@
-package main
+package counting_semaphore
 
 import "time"
 
-func main() {
+func example() {
 	cSem := NewCountingSemaphore(3)
 
 	cSem.Run(func() { time.Sleep(time.Second * 1); println("1-1") })
